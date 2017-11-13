@@ -14,5 +14,4 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 public @interface LayoutId {
     String value();
     String path();
-
 }

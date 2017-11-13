@@ -19,7 +19,9 @@ import static bindview.coder.allen.com.abindview.MainActivity$$Layout.text;
  * @author husongzhen
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    @LayoutId(value = "activity_main", path = "app/src/main/res/layout/")
+    public static final String path = "app/src/main/res/layout/";
+
+    @LayoutId(value = "activity_main", path = path)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

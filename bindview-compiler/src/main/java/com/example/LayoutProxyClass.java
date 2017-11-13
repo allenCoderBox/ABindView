@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.model.IdModel;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -67,7 +68,7 @@ public class LayoutProxyClass {
                 .addAnnotation(Override.class)
                 .addParameter(TypeName.get(mTypeElement.asType()), "activity", Modifier.FINAL);
         injectMethodBuilder.addStatement("activity.setContentView(R.layout.$N)", bindViews.getLayoutName());
-        for (ViewModel item : bindViews.getViewModels()) {
+        for (IdModel item : bindViews.getLayoutIds().getIds()) {
             injectMethodBuilder.addStatement("$N = ($N)activity.findViewById(R.id.$N)", item.getId(), item.getViewType(), item.getId());
         }
         // 添加以$$Proxy为后缀的类
@@ -78,7 +79,7 @@ public class LayoutProxyClass {
                 //把inject方法添加到该类中
                 .addMethod(injectMethodBuilder.build());
 
-        for (ViewModel item : bindViews.getViewModels()) {
+        for (IdModel item : bindViews.getLayoutIds().getIds()) {
             FieldSpec fieldSpec = FieldSpec.builder(ClassName.get(viewPackage, item.getViewType()), item.getId())
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .build();
@@ -92,7 +93,7 @@ public class LayoutProxyClass {
         return JavaFile.builder(packageName, typeSpec).build();
     }
 
-    private String getViewIdName(ViewModel item) {
+    private String getViewIdName(IdModel item) {
         return item.getId() + "Id";
     }
 
