@@ -1,7 +1,9 @@
 package com.example;
 
 /**
- * Created by husongzhen on 17/11/10.
+ *
+ * @author husongzhen
+ * @date 17/11/10
  */
 
 public class ViewModel {

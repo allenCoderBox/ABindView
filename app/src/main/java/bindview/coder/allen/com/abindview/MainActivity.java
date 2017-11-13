@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.allen.code.bindview_api.ABindViewTool;
 import com.example.LayoutId;
 
 import bindview.coder.allen.com.abindview.switchBuk.ICaseAction;
@@ -22,8 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainActivity$$Layout mainActivity$$Layout = new MainActivity$$Layout();
-        mainActivity$$Layout.inject(this);
+        ABindViewTool.bind(this);
         text.setOnClickListener(this);
         hello.setOnClickListener(this);
     }
