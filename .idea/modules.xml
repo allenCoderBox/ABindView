@@ -3,9 +3,14 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ABindView.iml" filepath="$PROJECT_DIR$/ABindView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ABindView.iml" filepath="$PROJECT_DIR$/ABindView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bindview-annotation/bindview-annotation.iml" filepath="$PROJECT_DIR$/bindview-annotation/bindview-annotation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bindview-annotation/bindview-annotation.iml" filepath="$PROJECT_DIR$/bindview-annotation/bindview-annotation.iml" />
       <module fileurl="file://$PROJECT_DIR$/bindview-api/bindview-api.iml" filepath="$PROJECT_DIR$/bindview-api/bindview-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bindview-api/bindview-api.iml" filepath="$PROJECT_DIR$/bindview-api/bindview-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bindview-compiler/bindview-compiler.iml" filepath="$PROJECT_DIR$/bindview-compiler/bindview-compiler.iml" />
       <module fileurl="file://$PROJECT_DIR$/bindview-compiler/bindview-compiler.iml" filepath="$PROJECT_DIR$/bindview-compiler/bindview-compiler.iml" />
     </modules>
   </component>

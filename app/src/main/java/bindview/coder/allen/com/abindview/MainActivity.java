@@ -13,6 +13,7 @@ import bindview.coder.allen.com.abindview.switchBuk.ICaseAction;
 import bindview.coder.allen.com.abindview.switchBuk.SwichCase;
 
 import static bindview.coder.allen.com.abindview.MainActivity$$Layout.hello;
+import static bindview.coder.allen.com.abindview.MainActivity$$Layout.main_levelt_3$merge_id_name2$merge_id_level2$hello_world;
 import static bindview.coder.allen.com.abindview.MainActivity$$Layout.text;
 
 /**
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ABindViewTool.bind(this);
         text.setOnClickListener(this);
         hello.setOnClickListener(this);
+        main_levelt_3$merge_id_name2$merge_id_level2$hello_world.setOnClickListener(this);
     }
 
     @Override

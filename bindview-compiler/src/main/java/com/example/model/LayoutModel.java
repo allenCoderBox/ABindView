@@ -1,5 +1,7 @@
 package com.example.model;
 
+import com.example.LayoutProxyClass;
+import com.example.utils.CodeCheck;
 import com.example.utils.LayoutType;
 
 import java.util.ArrayList;
@@ -19,8 +21,6 @@ public class LayoutModel {
     private String includeId;
     private IdModel root;
     private LayoutModel parentModel;
-
-
     private String sourceId;
 
 
@@ -28,9 +28,6 @@ public class LayoutModel {
         return sourceId;
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
-    }
 
     public LayoutModel getParentModel() {
         return parentModel;
@@ -38,6 +35,14 @@ public class LayoutModel {
 
     public void setParentModel(LayoutModel parentModel) {
         this.parentModel = parentModel;
+        if (CodeCheck.isNotNull(parentModel)){
+            String pSourceId = parentModel.sourceId;
+            if (CodeCheck.isNotNullString(includeId)) {
+                sourceId = CodeCheck.isNotNullString(pSourceId) ? pSourceId + LayoutProxyClass.STRING  + includeId: includeId;
+            } else {
+                sourceId = CodeCheck.isNotNullString(pSourceId) ? pSourceId : "";
+            }
+        }
     }
 
     public IdModel getRoot() {
@@ -61,6 +66,7 @@ public class LayoutModel {
     }
 
     public String getIncludeId() {
+
         return includeId;
     }
 

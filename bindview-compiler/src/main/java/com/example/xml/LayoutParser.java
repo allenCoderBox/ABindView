@@ -116,13 +116,13 @@ public class LayoutParser {
         String includeName = getLayoutName(value);
         LayoutParser parser = new LayoutParser(path);
         LayoutModel includeModel = new LayoutModel(LayoutType.include);
-        includeModel.setParentModel(layoutModel);
         Node item = getNodeID(map);
         if (item != null) {
             String id = item.getNodeValue();
             id = getIdName(id);
             includeModel.setIncludeId(id);
         }
+        includeModel.setParentModel(layoutModel);
         parser.parserXml(includeName, includeModel);
         layoutModel.addChildLayout(includeModel);
     }

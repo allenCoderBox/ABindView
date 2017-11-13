@@ -14,12 +14,14 @@ import com.squareup.javapoet.TypeSpec;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 
 /**
  * @author husongzhen
  */
 public class LayoutProxyClass {
 
+    public static final String STRING = "$";
     /**
      * 类元素
      */
@@ -83,7 +85,6 @@ public class LayoutProxyClass {
 
 
         addConstant(models, builder);
-
         TypeSpec typeSpec = builder.build();
         //添加包名
         String packageName = mElementUtils.getPackageOf(mTypeElement).getQualifiedName().toString();
@@ -93,44 +94,33 @@ public class LayoutProxyClass {
 
     private void addConstant(LayoutModel models, TypeSpec.Builder builder) {
         String resurceId = resetSourceId(models);
+        BindLayoutProcessor.messager.printMessage(Diagnostic.Kind.WARNING, CodeCheck.isNotNullString(resurceId) ? resurceId : "");
         for (IdModel item : models.getIds()) {
             FieldSpec fieldSpec = FieldSpec.builder(ClassName.get(viewPackage, item.getClazz()), getFieldName(resurceId, item))
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .build();
             builder.addField(fieldSpec);
         }
-
-
         for (LayoutModel item : models.getChilds()) {
-            item.setSourceId(resurceId == null || "".equals(resurceId) ? "" : resurceId);
             addConstant(item, builder);
         }
     }
 
     private String resetSourceId(LayoutModel models) {
-        String sourceId = models.getSourceId();
-        String includeId = models.getIncludeId();
-        if (CodeCheck.isNotNullString(includeId)) {
-            return CodeCheck.isNotNullString(sourceId) ? sourceId + "_" + includeId : includeId;
-        } else {
-            return CodeCheck.isNotNullString(sourceId) ? sourceId : "";
-        }
+        return models.getSourceId();
     }
 
     private String getFieldName(String resurceId, IdModel item) {
-        if (resurceId == null || "".equals(resurceId)) {
-            return "_" + item.getId();
-        }
-        return resurceId + "_" + item.getId();
+        return CodeCheck.isNotNullString(resurceId) ? resurceId + STRING + item.getId() : item.getId();
     }
 
     private void bindId(MethodSpec.Builder injectMethodBuilder, LayoutModel models) {
         String resurceId = resetSourceId(models);
+        BindLayoutProcessor.messager.printMessage(Diagnostic.Kind.WARNING, CodeCheck.isNotNullString(resurceId) ? resurceId : "");
         for (IdModel item : models.getIds()) {
             bindViewId(injectMethodBuilder, resurceId, item);
         }
         for (LayoutModel item : models.getChilds()) {
-            item.setSourceId(models.getSourceId() == null ? "" : models.getSourceId());
             bindId(injectMethodBuilder, item);
         }
     }
