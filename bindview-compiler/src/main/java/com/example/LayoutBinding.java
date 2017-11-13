@@ -34,6 +34,7 @@ public class LayoutBinding {
         LayoutParser layoutParser = new LayoutParser(path);
         rooLayout = new LayoutModel(LayoutType.layout);
         layoutParser.parserXml(layoutName, rooLayout);
+
     }
 
 

@@ -38,7 +38,7 @@ public class BindLayoutProcessor extends AbstractProcessor {
 
     private Filer mFiler;
     private Elements mElementUtils;
-    private Messager messager;
+    public static Messager messager;
     private Map<String, LayoutProxyClass> mProxyClassMap = new HashMap<>();
 
     @Override

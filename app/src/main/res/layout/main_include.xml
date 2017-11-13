@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mergename"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/hello"
+        android:id="@+id/hello_world"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -16,7 +17,14 @@
 
 
     <include
-        android:id="@+id/merge_id_name"
+        android:id="@+id/merge_id_level1"
+        layout="@layout/main_merge" />
+
+
+
+
+    <include
+        android:id="@+id/merge_id_name2"
         layout="@layout/main_merge" />
 
 </LinearLayout>

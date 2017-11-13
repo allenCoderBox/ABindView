@@ -1,7 +1,9 @@
 package com.example.xml;
 
 import com.example.model.LayoutModel;
+import com.example.utils.LayoutType;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -40,7 +42,7 @@ public class LayoutParser {
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
             org.w3c.dom.Document document = builder.parse(new File(apath));
             org.w3c.dom.Element rootElement = document.getDocumentElement();
-            parseNote(rootElement);
+            parseRoot(rootElement);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -48,6 +50,33 @@ public class LayoutParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void parseRoot(Element rootElement) {
+        String name = rootElement.getNodeName();
+        if (clearNull(name)) {
+            return;
+        }
+        NamedNodeMap map = rootElement.getAttributes();
+        if (map != null) {
+            if (layoutModel.getIncludeId() == null) {
+                Node item = getNodeID(map);
+                if (item != null) {
+                    String id = item.getNodeValue();
+                    id = getIdName(id);
+                    layoutModel.add(name, id);
+                }
+            } else {
+                if (layoutModel.getParentModel() != null) {
+                    layoutModel.getParentModel().add(name, layoutModel.getIncludeId());
+                }
+            }
+        }
+        childParse(rootElement.getChildNodes());
+    }
+
+    private String getIdName(String id) {
+        return id.replace("@+id/", "");
     }
 
 
@@ -62,6 +91,7 @@ public class LayoutParser {
     }
 
     private void parseNote(Node note) {
+
         String name = note.getNodeName();
         if (clearNull(name)) {
             return;
@@ -83,16 +113,38 @@ public class LayoutParser {
             return;
         }
         String value = layout.getNodeValue();
-        String includeName = value.replace("@layout/", "");
-        parserFile(includeName);
+        String includeName = getLayoutName(value);
+        LayoutParser parser = new LayoutParser(path);
+        LayoutModel includeModel = new LayoutModel(LayoutType.include);
+        includeModel.setParentModel(layoutModel);
+        Node item = getNodeID(map);
+        if (item != null) {
+            String id = item.getNodeValue();
+            id = getIdName(id);
+            includeModel.setIncludeId(id);
+        }
+        parser.parserXml(includeName, includeModel);
+        layoutModel.addChildLayout(includeModel);
+    }
+
+    private String getLayoutName(String value) {
+        return value.replace("@layout/", "");
     }
 
     private void viewId(String name, NamedNodeMap map) {
         Node item = getNodeID(map);
         if (item != null) {
             String id = item.getNodeValue();
-            id = id.replace("@+id/", "");
-            layoutModel.add(name, id);
+            id = getIdName(id);
+            if (layoutModel.getIncludeId() != null) {
+                layoutModel.add(name, id);
+            } else {
+                if (layoutModel.getParentModel() == null) {
+                    layoutModel.add(name, id);
+                } else {
+                    layoutModel.getParentModel().add(name, id);
+                }
+            }
         }
     }
 

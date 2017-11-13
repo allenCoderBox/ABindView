@@ -63,8 +63,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void showToast(View view) {
         Toast.makeText(this, "hello world" + "name == " + getNameById(view), Toast.LENGTH_SHORT).show();
     }
-
-
     public String getName(int id) {
         Resources res = getResources();
         return res.getResourceName(id);

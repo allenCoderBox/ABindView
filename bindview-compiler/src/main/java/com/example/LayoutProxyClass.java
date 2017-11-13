@@ -1,6 +1,8 @@
 package com.example;
 
 import com.example.model.IdModel;
+import com.example.model.LayoutModel;
+import com.example.utils.CodeCheck;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -68,9 +70,9 @@ public class LayoutProxyClass {
                 .addAnnotation(Override.class)
                 .addParameter(TypeName.get(mTypeElement.asType()), "activity", Modifier.FINAL);
         injectMethodBuilder.addStatement("activity.setContentView(R.layout.$N)", bindViews.getLayoutName());
-        for (IdModel item : bindViews.getLayoutIds().getIds()) {
-            injectMethodBuilder.addStatement("$N = ($N)activity.findViewById(R.id.$N)", item.getId(), item.getViewType(), item.getId());
-        }
+
+        LayoutModel models = bindViews.getLayoutIds();
+        bindId(injectMethodBuilder, models);
         // 添加以$$Proxy为后缀的类
         TypeSpec.Builder builder = TypeSpec.classBuilder(mTypeElement.getSimpleName() + SUFFIX)
                 .addModifiers(Modifier.PUBLIC)
@@ -79,18 +81,66 @@ public class LayoutProxyClass {
                 //把inject方法添加到该类中
                 .addMethod(injectMethodBuilder.build());
 
-        for (IdModel item : bindViews.getLayoutIds().getIds()) {
-            FieldSpec fieldSpec = FieldSpec.builder(ClassName.get(viewPackage, item.getViewType()), item.getId())
-                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                    .build();
-            builder.addField(fieldSpec);
-        }
+
+        addConstant(models, builder);
 
         TypeSpec typeSpec = builder.build();
         //添加包名
         String packageName = mElementUtils.getPackageOf(mTypeElement).getQualifiedName().toString();
         //生成Java文件
         return JavaFile.builder(packageName, typeSpec).build();
+    }
+
+    private void addConstant(LayoutModel models, TypeSpec.Builder builder) {
+        String resurceId = resetSourceId(models);
+        for (IdModel item : models.getIds()) {
+            FieldSpec fieldSpec = FieldSpec.builder(ClassName.get(viewPackage, item.getClazz()), getFieldName(resurceId, item))
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .build();
+            builder.addField(fieldSpec);
+        }
+
+
+        for (LayoutModel item : models.getChilds()) {
+            item.setSourceId(resurceId == null || "".equals(resurceId) ? "" : resurceId);
+            addConstant(item, builder);
+        }
+    }
+
+    private String resetSourceId(LayoutModel models) {
+        String sourceId = models.getSourceId();
+        String includeId = models.getIncludeId();
+        if (CodeCheck.isNotNullString(includeId)) {
+            return CodeCheck.isNotNullString(sourceId) ? sourceId + "_" + includeId : includeId;
+        } else {
+            return CodeCheck.isNotNullString(sourceId) ? sourceId : "";
+        }
+    }
+
+    private String getFieldName(String resurceId, IdModel item) {
+        if (resurceId == null || "".equals(resurceId)) {
+            return "_" + item.getId();
+        }
+        return resurceId + "_" + item.getId();
+    }
+
+    private void bindId(MethodSpec.Builder injectMethodBuilder, LayoutModel models) {
+        String resurceId = resetSourceId(models);
+        for (IdModel item : models.getIds()) {
+            bindViewId(injectMethodBuilder, resurceId, item);
+        }
+        for (LayoutModel item : models.getChilds()) {
+            item.setSourceId(models.getSourceId() == null ? "" : models.getSourceId());
+            bindId(injectMethodBuilder, item);
+        }
+    }
+
+    private void bindViewId(MethodSpec.Builder injectMethodBuilder, String resurceId, IdModel item) {
+        if (resurceId == null || "".equals(resurceId)) {
+            injectMethodBuilder.addStatement("$N = ($N)activity.findViewById(R.id.$N)", getFieldName(resurceId, item), item.getClazz(), item.getId());
+        } else {
+            injectMethodBuilder.addStatement("$N = ($N)$N.findViewById(R.id.$N)", getFieldName(resurceId, item), item.getClazz(), resurceId, item.getId());
+        }
     }
 
     private String getViewIdName(IdModel item) {

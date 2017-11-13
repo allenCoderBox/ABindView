@@ -28,6 +28,7 @@
 
 
     <TextView
+        android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -38,8 +39,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
-    <include layout="@layout/main_include" />
-
+    <include
+        android:id="@+id/main_levelt_3"
+        layout="@layout/main_include" />
 
 </LinearLayout>
