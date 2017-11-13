@@ -14,7 +14,6 @@ import java.util.Set;
 
 public class LayoutModel {
     private Set<IdModel> ids = new HashSet<>();
-    private String fileName;
     private LayoutType type;
     private List<LayoutModel> childs = new ArrayList<>();
 
@@ -34,15 +33,6 @@ public class LayoutModel {
 
     public void add(String clazz, String id) {
         ids.add(new IdModel(clazz, id));
-    }
-
-    public void setLayoutName(String fileName) {
-        this.fileName = fileName;
-    }
-
-
-    public String getFileName() {
-        return fileName;
     }
 
 

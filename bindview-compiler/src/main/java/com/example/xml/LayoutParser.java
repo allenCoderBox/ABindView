@@ -1,8 +1,6 @@
 package com.example.xml;
 
-import com.example.model.IdModel;
 import com.example.model.LayoutModel;
-import com.example.utils.LayoutType;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -11,7 +9,6 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,13 +27,13 @@ public class LayoutParser {
         this.path = path;
     }
 
-    public void parserXml(LayoutModel rooModel) {
+    public void parserXml(String name, LayoutModel rooModel) {
         this.layoutModel = rooModel;
-        parserFile(rooModel);
+        parserFile(name);
     }
 
-    private void parserFile(LayoutModel rooModel) {
-        File file = new File(getLayoutPath(rooModel.getFileName(), path));
+    private void parserFile(String name) {
+        File file = new File(getLayoutPath(name, path));
         String apath = file.getAbsolutePath();
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         try {
@@ -78,7 +75,6 @@ public class LayoutParser {
             }
         }
         childParse(note.getChildNodes());
-
     }
 
     private void includeId(NamedNodeMap map) {
@@ -88,15 +84,7 @@ public class LayoutParser {
         }
         String value = layout.getNodeValue();
         String includeName = value.replace("@layout/", "");
-        LayoutModel model = new LayoutModel(LayoutType.include);
-        model.setLayoutName(includeName);
-        LayoutParser parser = new LayoutParser(path);
-        parser.parserXml(model);
-        layoutModel.addChildLayout(model);
-        if (getNodeID(map) == null) {
-            Set<IdModel> list = layoutModel.getIds();
-            list.addAll(model.getIds());
-        }
+        parserFile(includeName);
     }
 
     private void viewId(String name, NamedNodeMap map) {

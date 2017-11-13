@@ -10,9 +10,12 @@ import javax.lang.model.element.Element;
 /**
  * Created by husongzhen on 17/11/10.
  * <p>
- * <p>
  * 读取xml
  * <p>
+ * 怎么解决view include 同名的问题呢
+ * 如果include有id， 生成一个对应的类
+ * 没有id， 直接给顶层生成
+ * 有没有简单的解决办法来解决id的问题
  * merge
  * veiwstub
  */
@@ -30,8 +33,7 @@ public class LayoutBinding {
         String path = layoutId.path();
         LayoutParser layoutParser = new LayoutParser(path);
         rooLayout = new LayoutModel(LayoutType.layout);
-        rooLayout.setLayoutName(layoutName);
-        layoutParser.parserXml(rooLayout);
+        layoutParser.parserXml(layoutName, rooLayout);
     }
 
 

@@ -38,9 +38,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <include
-        android:id="@+id/merge_id"
-        layout="@layout/main_merge" />
 
     <include layout="@layout/main_include" />
 
