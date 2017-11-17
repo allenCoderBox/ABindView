@@ -91,7 +91,6 @@ public class LayoutParser {
     }
 
     private void parseNote(Node note) {
-
         String name = note.getNodeName();
         if (clearNull(name)) {
             return;

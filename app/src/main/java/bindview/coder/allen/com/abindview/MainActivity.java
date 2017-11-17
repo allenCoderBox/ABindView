@@ -13,7 +13,7 @@ import bindview.coder.allen.com.abindview.switchBuk.ICaseAction;
 import bindview.coder.allen.com.abindview.switchBuk.SwichCase;
 
 import static bindview.coder.allen.com.abindview.MainActivity$$Layout.hello;
-import static bindview.coder.allen.com.abindview.MainActivity$$Layout.main_levelt_3$merge_id_name2$merge_id_level2$hello_world;
+import static bindview.coder.allen.com.abindview.MainActivity$$Layout.main_levelt_3$merge_id_level1$merge_id_level2$lv_hello_world;
 import static bindview.coder.allen.com.abindview.MainActivity$$Layout.text;
 
 /**
@@ -29,11 +29,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ABindViewTool.bind(this);
         text.setOnClickListener(this);
         hello.setOnClickListener(this);
-        main_levelt_3$merge_id_name2$merge_id_level2$hello_world.setOnClickListener(this);
+        main_levelt_3$merge_id_level1$merge_id_level2$lv_hello_world.setOnClickListener(this);
     }
 
     @Override
     public void onClick(final View view) {
+
+
         SwichCase.create()
                 .scase(R.id.hello, new ICaseAction() {
                     @Override
@@ -46,7 +48,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onAction() {
                         textMethod(view);
                     }
-                })
+                }).scase(R.id.hello_world, new ICaseAction() {
+            @Override
+            public void onAction() {
+                textMethod(view);
+            }
+        })
                 .action(view.getId());
     }
 
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void showToast(View view) {
         Toast.makeText(this, "hello world" + "name == " + getNameById(view), Toast.LENGTH_SHORT).show();
     }
+
     public String getName(int id) {
         Resources res = getResources();
         return res.getResourceName(id);
