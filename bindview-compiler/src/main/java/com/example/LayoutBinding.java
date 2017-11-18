@@ -1,8 +1,8 @@
 package com.example;
 
-import com.example.model.LayoutModel;
-import com.example.utils.LayoutType;
-import com.example.xml.LayoutParser;
+import com.example.model.note.impl.LayoutFile;
+import com.example.xml.XmlParser;
+import com.example.xml.XmlParserImpl;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
@@ -24,17 +24,17 @@ public class LayoutBinding {
 
 
     private final String layoutName;
-    private final LayoutModel rooLayout;
+    private final LayoutFile file;
 
 
     public LayoutBinding(Messager messager, Element element) {
         LayoutId layoutId = element.getAnnotation(LayoutId.class);
         layoutName = layoutId.value();
         String path = layoutId.path();
-        LayoutParser layoutParser = new LayoutParser(path);
-        rooLayout = new LayoutModel(LayoutType.layout);
-        layoutParser.parserXml(layoutName, rooLayout);
-
+        XmlParser parser = new XmlParserImpl();
+        file = new LayoutFile(layoutName, path);
+        parser.parserXml(file);
+        file.mergeIds();
     }
 
 
@@ -43,7 +43,17 @@ public class LayoutBinding {
     }
 
 
-    public LayoutModel getLayoutIds() {
-        return rooLayout;
+    public LayoutFile getLayoutIds() {
+
+
+
+
+
+
+
+
+
+
+        return file;
     }
 }

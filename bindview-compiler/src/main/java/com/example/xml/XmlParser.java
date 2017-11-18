@@ -1,9 +1,11 @@
 package com.example.xml;
 
+import com.example.model.note.IXmlNode;
+
 /**
  * Created by husongzhen on 17/11/13.
  */
 
 public interface XmlParser {
-    void parserXml(String fileName);
+    IXmlNode parserXml(IXmlNode xmlFile);
 }

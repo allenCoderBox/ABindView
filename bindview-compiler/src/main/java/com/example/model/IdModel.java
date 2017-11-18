@@ -24,6 +24,14 @@ public class IdModel {
     }
 
 
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

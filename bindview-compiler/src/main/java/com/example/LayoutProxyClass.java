@@ -1,8 +1,7 @@
 package com.example;
 
 import com.example.model.IdModel;
-import com.example.model.LayoutModel;
-import com.example.utils.CodeCheck;
+import com.example.model.note.impl.LayoutFile;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -73,8 +72,8 @@ public class LayoutProxyClass {
                 .addParameter(TypeName.get(mTypeElement.asType()), "activity", Modifier.FINAL);
         injectMethodBuilder.addStatement("activity.setContentView(R.layout.$N)", bindViews.getLayoutName());
 
-        LayoutModel models = bindViews.getLayoutIds();
-        bindId(injectMethodBuilder, models);
+        LayoutFile layoutFile = bindViews.getLayoutIds();
+        bindId(injectMethodBuilder, layoutFile);
         // 添加以$$Proxy为后缀的类
         TypeSpec.Builder builder = TypeSpec.classBuilder(mTypeElement.getSimpleName() + SUFFIX)
                 .addModifiers(Modifier.PUBLIC)
@@ -84,7 +83,7 @@ public class LayoutProxyClass {
                 .addMethod(injectMethodBuilder.build());
 
 
-        addConstant(models, builder);
+        addConstant(layoutFile, builder);
         TypeSpec typeSpec = builder.build();
         //添加包名
         String packageName = mElementUtils.getPackageOf(mTypeElement).getQualifiedName().toString();
@@ -92,45 +91,31 @@ public class LayoutProxyClass {
         return JavaFile.builder(packageName, typeSpec).build();
     }
 
-    private void addConstant(LayoutModel models, TypeSpec.Builder builder) {
-        String resurceId = resetSourceId(models);
-        BindLayoutProcessor.messager.printMessage(Diagnostic.Kind.WARNING, CodeCheck.isNotNullString(resurceId) ? resurceId : "");
-        for (IdModel item : models.getIds()) {
-            FieldSpec fieldSpec = FieldSpec.builder(ClassName.get(viewPackage, item.getClazz()), getFieldName(resurceId, item))
+    private void addConstant(LayoutFile layoutFile, TypeSpec.Builder builder) {
+        BindLayoutProcessor.messager.printMessage(Diagnostic.Kind.WARNING, layoutFile.toString());
+        for (IdModel item : layoutFile.getIds()) {
+            FieldSpec fieldSpec = FieldSpec.builder(ClassName.get(viewPackage, item.getClazz()), getFieldName(item))
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .build();
             builder.addField(fieldSpec);
         }
-        for (LayoutModel item : models.getChilds()) {
-            addConstant(item, builder);
-        }
     }
 
-    private String resetSourceId(LayoutModel models) {
-        return models.getSourceId();
+
+    private String getFieldName(IdModel item) {
+        return item.getId();
     }
 
-    private String getFieldName(String resurceId, IdModel item) {
-        return CodeCheck.isNotNullString(resurceId) ? resurceId + STRING + item.getId() : item.getId();
+    private void bindId(MethodSpec.Builder injectMethodBuilder, LayoutFile layoutFile) {
+        BindLayoutProcessor.messager.printMessage(Diagnostic.Kind.WARNING, layoutFile.toString());
+        for (IdModel item : layoutFile.getIds()) {
+            bindViewId(injectMethodBuilder, item);
+        }
+
     }
 
-    private void bindId(MethodSpec.Builder injectMethodBuilder, LayoutModel models) {
-        String resurceId = resetSourceId(models);
-        BindLayoutProcessor.messager.printMessage(Diagnostic.Kind.WARNING, CodeCheck.isNotNullString(resurceId) ? resurceId : "");
-        for (IdModel item : models.getIds()) {
-            bindViewId(injectMethodBuilder, resurceId, item);
-        }
-        for (LayoutModel item : models.getChilds()) {
-            bindId(injectMethodBuilder, item);
-        }
-    }
-
-    private void bindViewId(MethodSpec.Builder injectMethodBuilder, String resurceId, IdModel item) {
-        if (resurceId == null || "".equals(resurceId)) {
-            injectMethodBuilder.addStatement("$N = ($N)activity.findViewById(R.id.$N)", getFieldName(resurceId, item), item.getClazz(), item.getId());
-        } else {
-            injectMethodBuilder.addStatement("$N = ($N)$N.findViewById(R.id.$N)", getFieldName(resurceId, item), item.getClazz(), resurceId, item.getId());
-        }
+    private void bindViewId(MethodSpec.Builder injectMethodBuilder, IdModel item) {
+        injectMethodBuilder.addStatement("$N = ($N)activity.findViewById(R.id.$N)", getFieldName(item), item.getClazz(), item.getId());
     }
 
     private String getViewIdName(IdModel item) {
